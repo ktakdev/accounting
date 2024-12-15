@@ -32,8 +32,24 @@ func main() {
 		},
 	}
 
-	primaryPL := model.PL{NetIncome: 30000, OtherExpenses: 570000, OtherIncome: 600000}
-	subsidiaryPL := model.PL{NetIncome: 12000, OtherExpenses: 138000, OtherIncome: 150000}
+	primaryPL := model.PL{
+		Debit: model.PLDebit{OtherExpenses: 570000,
+			NetIncome: 30000,
+		},
+		Credit: model.PLCredit{
+			OtherIncome: 600000,
+		},
+	}
+
+	subsidiaryPL := model.PL{
+		Debit: model.PLDebit{
+			OtherExpenses: 138000,
+			NetIncome:     12000,
+		},
+		Credit: model.PLCredit{
+			OtherIncome: 150000,
+		},
+	}
 
 	consolidatedBS, consolidatedPL := model.Consolidate(primaryBS, subsidiaryBS, primaryPL, subsidiaryPL)
 

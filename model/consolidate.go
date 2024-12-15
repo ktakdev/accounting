@@ -11,13 +11,18 @@ func Consolidate(primaryBS, subsidiaryBS BS, primaryPL, subsidiaryPL PL) (BS, PL
 			OtherLiabilities: primaryBS.Credit.OtherLiabilities + subsidiaryBS.Credit.OtherLiabilities,
 			Capital:          primaryBS.Credit.Capital,
 			CapitalSurplus:   primaryBS.Credit.CapitalSurplus,
-			RetainedEarnings: primaryBS.Credit.RetainedEarnings + primaryPL.NetIncome + subsidiaryPL.NetIncome,
+			RetainedEarnings: primaryBS.Credit.RetainedEarnings + primaryPL.Debit.NetIncome + subsidiaryPL.Debit.NetIncome,
 		},
 	}
+
 	consolidatedPL := PL{
-		NetIncome:     primaryPL.NetIncome + subsidiaryPL.NetIncome,
-		OtherExpenses: primaryPL.OtherExpenses + subsidiaryPL.OtherExpenses,
-		OtherIncome:   primaryPL.OtherIncome + subsidiaryPL.OtherIncome,
+		PLDebit{
+			OtherExpenses: primaryPL.Debit.OtherExpenses + subsidiaryPL.Debit.OtherExpenses,
+			NetIncome:     primaryPL.Debit.NetIncome + subsidiaryPL.Debit.NetIncome,
+		},
+		PLCredit{
+			OtherIncome: primaryPL.Credit.OtherIncome + subsidiaryPL.Credit.OtherIncome,
+		},
 	}
 
 	return consolidatedBS, consolidatedPL
