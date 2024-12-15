@@ -1,12 +1,18 @@
 package model
 
 type BalanceSheet struct {
-	Capital int `json:"capital"`
+	SubsidiaryStock  int `json:"子会社株式"`
+	Capital          int `json:"資本金"`
+	CapitalSurplus   int `json:"資本剰余金"`
+	RetainedEarnings int `json:"利益剰余金"`
 }
 
 // BSの連結
 func Consolidate(primary, subsidiary BalanceSheet) BalanceSheet {
 	return BalanceSheet{
-		Capital: primary.Capital + subsidiary.Capital,
+		SubsidiaryStock:  0,
+		Capital:          primary.Capital + subsidiary.Capital,
+		CapitalSurplus:   primary.CapitalSurplus,
+		RetainedEarnings: primary.RetainedEarnings,
 	}
 }
