@@ -60,11 +60,21 @@ func main() {
 	}
 
 	fmt.Println(string(jsonDataBS))
+	isValidBS := consolidatedBS.Validate()
+
+	if !isValidBS {
+		fmt.Println("整合性のないBSです")
+	}
 
 	jsonDataPL, err := json.Marshal(consolidatedPL)
+	isValidPL := consolidatedPL.Validate()
 	if err != nil {
 		fmt.Println("Error marshalling to JSON:", err)
 		return
+	}
+
+	if !isValidPL {
+		fmt.Println("整合性のないPLです")
 	}
 
 	fmt.Println(string(jsonDataPL))
