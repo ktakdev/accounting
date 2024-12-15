@@ -3,12 +3,16 @@ package model
 // BS, PLの連結
 func Consolidate(primaryBS, subsidiaryBS BS, primaryPL, subsidiaryPL PL) (BS, PL) {
 	consolidatedBS := BS{
-		OtherAssets:      primaryBS.OtherAssets + subsidiaryBS.OtherAssets,
-		SubsidiaryStock:  0,
-		OtherLiabilities: primaryBS.OtherLiabilities + subsidiaryBS.OtherLiabilities,
-		Capital:          primaryBS.Capital,
-		CapitalSurplus:   primaryBS.CapitalSurplus,
-		RetainedEarnings: primaryBS.RetainedEarnings + primaryPL.NetIncome + subsidiaryPL.NetIncome,
+		Debit: Debit{
+			OtherAssets:     primaryBS.Debit.OtherAssets + subsidiaryBS.Debit.OtherAssets,
+			SubsidiaryStock: 0,
+		},
+		Credit: Credit{
+			OtherLiabilities: primaryBS.Credit.OtherLiabilities + subsidiaryBS.Credit.OtherLiabilities,
+			Capital:          primaryBS.Credit.Capital,
+			CapitalSurplus:   primaryBS.Credit.CapitalSurplus,
+			RetainedEarnings: primaryBS.Credit.RetainedEarnings + primaryPL.NetIncome + subsidiaryPL.NetIncome,
+		},
 	}
 	consolidatedPL := PL{
 		NetIncome:     primaryPL.NetIncome + subsidiaryPL.NetIncome,
