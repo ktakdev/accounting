@@ -14,3 +14,20 @@ type ProfitLoss struct {
 }
 
 type PL = ProfitLoss
+
+// 借方合計
+func (debit *PLDebit) Sum() int {
+	return debit.OtherExpenses + debit.NetIncome
+}
+
+// 貸方合計
+func (credit *PLCredit) Sum() int {
+	return credit.OtherIncome
+}
+
+// 貸借の一致を確認
+func (bs *ProfitLoss) Validate() bool {
+	debitTotal := bs.Debit.Sum()
+	creditTotal := bs.Credit.Sum()
+	return debitTotal == creditTotal
+}
