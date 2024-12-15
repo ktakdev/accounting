@@ -8,11 +8,11 @@ import (
 
 func main() {
 	primaryBS := model.BS{
-		Debit: model.Debit{
+		Debit: model.BSDebit{
 			OtherAssets:     187000,
 			SubsidiaryStock: 17000,
 		},
-		Credit: model.Credit{
+		Credit: model.BSCredit{
 			OtherLiabilities: 86000,
 			Capital:          55000,
 			CapitalSurplus:   10000,
@@ -21,10 +21,10 @@ func main() {
 	}
 
 	subsidiaryBS := model.BS{
-		Debit: model.Debit{
+		Debit: model.BSDebit{
 			OtherAssets: 48000,
 		},
-		Credit: model.Credit{
+		Credit: model.BSCredit{
 			OtherLiabilities: 19000,
 			Capital:          10000,
 			CapitalSurplus:   2000,
