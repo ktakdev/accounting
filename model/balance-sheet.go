@@ -4,6 +4,7 @@ type BSDebit struct {
 	OtherAssets     int `json:"諸資産"`
 	SubsidiaryStock int `json:"子会社株式"`
 }
+
 type BSCredit struct {
 	OtherLiabilities int `json:"諸負債"`
 	Capital          int `json:"資本金"`
@@ -17,3 +18,20 @@ type BalanceSheet struct {
 }
 
 type BS = BalanceSheet
+
+// 借方合計
+func (debit *BSDebit) Sum() int {
+	return debit.OtherAssets + debit.SubsidiaryStock
+}
+
+// 貸方合計
+func (credit *BSCredit) Sum() int {
+	return credit.OtherLiabilities + credit.Capital + credit.CapitalSurplus + credit.RetainedEarnings
+}
+
+// 貸借の一致を確認
+func (bs *BalanceSheet) Validate() bool {
+	debitTotal := bs.Debit.Sum()
+	creditTotal := bs.Credit.Sum()
+	return debitTotal == creditTotal
+}
