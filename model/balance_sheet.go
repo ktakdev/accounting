@@ -5,9 +5,10 @@ type BalanceSheet struct {
 	Credit BSCredit `json:"貸方"`
 }
 type BSDebit struct {
-	OtherAssets     int `json:"諸資産"`
-	SubsidiaryStock int `json:"子会社株式"`
-	Goodwill        int `json:"のれん"`
+	OtherAssets     float64 `json:"諸資産"`
+	Land            float64 `json:"土地"`
+	SubsidiaryStock float64 `json:"子会社株式"`
+	Goodwill        float64 `json:"のれん"`
 }
 
 type BSCredit struct {
@@ -16,34 +17,35 @@ type BSCredit struct {
 }
 
 type Liabilities struct {
-	OtherLiabilities int `json:"諸負債"`
+	OtherLiabilities float64 `json:"諸負債"`
 }
 
 type NetAssets struct {
-	Capital          int `json:"資本金"`
-	CapitalSurplus   int `json:"資本剰余金"`
-	RetainedEarnings int `json:"利益剰余金"`
+	Capital                 float64 `json:"資本金"`
+	CapitalSurplus          float64 `json:"資本剰余金"`
+	RetainedEarnings        float64 `json:"利益剰余金"`
+	NonControllingInterests float64 `json:"被支配株主持分"`
 }
 
 type BS = BalanceSheet
 
 // 借方合計
-func (debit *BSDebit) Sum() int {
-	return debit.OtherAssets + debit.SubsidiaryStock
+func (debit *BSDebit) Sum() float64 {
+	return debit.OtherAssets + debit.Land + debit.SubsidiaryStock
 }
 
 // 貸方合計
-func (credit *BSCredit) Sum() int {
+func (credit *BSCredit) Sum() float64 {
 	return credit.Liabilities.Sum() + credit.NetAssets.Sum()
 }
 
 // 負債合計
-func (liabilies *Liabilities) Sum() int {
+func (liabilies *Liabilities) Sum() float64 {
 	return liabilies.OtherLiabilities
 }
 
 // 純資産合計
-func (netAssets *NetAssets) Sum() int {
+func (netAssets *NetAssets) Sum() float64 {
 	return netAssets.Capital + netAssets.CapitalSurplus + netAssets.RetainedEarnings
 }
 

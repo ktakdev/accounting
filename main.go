@@ -59,7 +59,7 @@ func main() {
 		},
 	}
 
-	consolidatedBS, consolidatedPL := model.Consolidate(primaryBS, subsidiaryBS, primaryPL, subsidiaryPL)
+	consolidatedBS, consolidatedPL := model.Consolidate(primaryBS, subsidiaryBS, primaryPL, subsidiaryPL, model.ConsolidateOptions{})
 
 	jsonDataBS, err := json.Marshal(consolidatedBS)
 	if err != nil {

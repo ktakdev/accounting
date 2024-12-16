@@ -57,7 +57,7 @@ func TestConsolidate(t *testing.T) {
 		},
 	}
 
-	consolidatedBS, consolidatedPL := Consolidate(primaryBS, subsidiaryBS, primaryPL, subsidiaryPL)
+	consolidatedBS, consolidatedPL := Consolidate(primaryBS, subsidiaryBS, primaryPL, subsidiaryPL, ConsolidateOptions{})
 
 	// BSテスト
 
@@ -98,6 +98,10 @@ func TestConsolidate(t *testing.T) {
 	if consolidatedPL.Credit.OtherIncome != 750000 {
 		t.Errorf("諸負債 = %v,  want %v", consolidatedPL.Credit.OtherIncome, 750000)
 	}
+
+	if consolidatedBS.Credit.NetAssets.NonControllingInterests != 0 {
+		t.Errorf("被支配株主持分 = %v,  want %v", consolidatedBS.Credit.NetAssets.NonControllingInterests, 0)
+	}
 }
 
 // 29-1-15
@@ -136,7 +140,7 @@ func TestConsolidateGoodwill(t *testing.T) {
 		},
 	}
 
-	consolidatedBS := ConsolidateBS(primaryBS, subsidiaryBS)
+	consolidatedBS := ConsolidateBS(primaryBS, subsidiaryBS, ConsolidateOptions{})
 
 	// BSテスト
 
@@ -166,5 +170,80 @@ func TestConsolidateGoodwill(t *testing.T) {
 
 	if consolidatedBS.Credit.NetAssets.RetainedEarnings != 23000 {
 		t.Errorf("利益剰余金 = %v,  want %v", consolidatedBS.Credit.NetAssets.RetainedEarnings, 23000)
+	}
+
+	if consolidatedBS.Credit.NetAssets.NonControllingInterests != 0 {
+		t.Errorf("被支配株主持分 = %v,  want %v", consolidatedBS.Credit.NetAssets.NonControllingInterests, 0)
+	}
+}
+
+// 29-1-29
+func TestConsolidateNCI(t *testing.T) {
+
+	primaryBS := BS{
+		Debit: BSDebit{
+			OtherAssets:     108000,
+			Land:            54000,
+			SubsidiaryStock: 12000,
+		},
+		Credit: BSCredit{
+			Liabilities: Liabilities{
+				OtherLiabilities: 86000,
+			},
+			NetAssets: NetAssets{
+				Capital:          55000,
+				CapitalSurplus:   10000,
+				RetainedEarnings: 23000,
+			},
+		},
+	}
+
+	subsidiaryBS := BS{
+		Debit: BSDebit{
+			OtherAssets: 30000,
+			Land:        6500,
+		},
+		Credit: BSCredit{
+			Liabilities: Liabilities{
+				OtherLiabilities: 19000,
+			},
+			NetAssets: NetAssets{
+				Capital:          10500,
+				CapitalSurplus:   2000,
+				RetainedEarnings: 5000,
+			},
+		},
+	}
+
+	consolidatedBS := ConsolidateBS(primaryBS, subsidiaryBS, ConsolidateOptions{ParentOwnershipRatio: 0.6})
+
+	// BSテスト
+
+	if consolidatedBS.Debit.OtherAssets != 138000 {
+		t.Errorf("諸資産 = %v,  want %v", consolidatedBS.Debit.OtherAssets, 138000)
+	}
+
+	if consolidatedBS.Debit.SubsidiaryStock != 0 {
+		t.Errorf("子会社株式 = %v,  want %v", consolidatedBS.Debit.SubsidiaryStock, 0)
+	}
+
+	if consolidatedBS.Debit.Goodwill != 1500 {
+		t.Errorf("のれん = %v,  want %v", consolidatedBS.Debit.Goodwill, 1500)
+	}
+
+	if consolidatedBS.Credit.Liabilities.OtherLiabilities != 105000 {
+		t.Errorf("諸負債 = %v,  want %v", consolidatedBS.Credit.Liabilities.OtherLiabilities, 105000)
+	}
+
+	if consolidatedBS.Credit.NetAssets.Capital != 55000 {
+		t.Errorf("資本金 = %v,  want %v", consolidatedBS.Credit.NetAssets.Capital, 55000)
+	}
+
+	if consolidatedBS.Credit.NetAssets.CapitalSurplus != 10000 {
+		t.Errorf("資本剰余金 = %v,  want %v", consolidatedBS.Credit.NetAssets.CapitalSurplus, 10000)
+	}
+
+	if consolidatedBS.Credit.NetAssets.NonControllingInterests != 7000 {
+		t.Errorf("被支配株主持分 = %v,  want %v", consolidatedBS.Credit.NetAssets.NonControllingInterests, 7000)
 	}
 }
