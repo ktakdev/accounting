@@ -58,14 +58,19 @@ func ConsolidatePL(primaryPL, subsidiaryPL PL, opts ConsolidateOptions) PL {
 		opts.ContorollingInterestRatio = 1
 	}
 
+	// 親会社に帰属する子会社の当期純損益
 	CINetIncome := subsidiaryPL.Debit.NetIncome * opts.ContorollingInterestRatio
+
+	// 被支配株主に帰属する子会社の当期純損益
 	NCINetIncome := subsidiaryPL.Debit.NetIncome - CINetIncome
 
 	return PL{
 		PLDebit{
 			OtherExpenses: primaryPL.Debit.OtherExpenses + subsidiaryPL.Debit.OtherExpenses,
-			NetIncome:     primaryPL.Debit.NetIncome + CINetIncome,
-			NCINetIncome:  NCINetIncome,
+			// 親会社の純損益 + 子会社の親会社帰属部分
+			NetIncome: primaryPL.Debit.NetIncome + CINetIncome,
+			// 子会社の被支配株主帰属部分
+			NCINetIncome: NCINetIncome,
 		},
 		PLCredit{
 			OtherIncome: primaryPL.Credit.OtherIncome + subsidiaryPL.Credit.OtherIncome,
