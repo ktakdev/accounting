@@ -1,7 +1,7 @@
 package model
 
 type ConsolidateOptions struct {
-	ParentOwnershipRatio float64 `json:"親会社が保有している株式の割合"`
+	ContorollingInterestRatio float64 `json:"親会社が保有している株式の割合"`
 }
 
 // BS, PLの連結
@@ -14,13 +14,13 @@ func Consolidate(primaryBS, subsidiaryBS BS, primaryPL, subsidiaryPL PL, opts Co
 
 func ConsolidateBS(primaryBS, subsidiaryBS BS, opts ConsolidateOptions) BS {
 	// 親会社の保有割合の指定なし、かつ子会社株式を持っていた場合
-	if opts.ParentOwnershipRatio == 0 && primaryBS.Debit.SubsidiaryStock > 0 {
+	if opts.ContorollingInterestRatio == 0 && primaryBS.Debit.SubsidiaryStock > 0 {
 		// すべて保有していると考える
-		opts.ParentOwnershipRatio = 1
+		opts.ContorollingInterestRatio = 1
 	}
 
 	netAssetsSum := subsidiaryBS.Credit.NetAssets.Sum()
-	controllingInterests := netAssetsSum * opts.ParentOwnershipRatio
+	controllingInterests := netAssetsSum * opts.ContorollingInterestRatio
 	nonControllingInterests := netAssetsSum - controllingInterests
 
 	return BS{

@@ -215,7 +215,7 @@ func TestConsolidateNCI(t *testing.T) {
 		},
 	}
 
-	consolidatedBS := ConsolidateBS(primaryBS, subsidiaryBS, ConsolidateOptions{ParentOwnershipRatio: 0.6})
+	consolidatedBS := ConsolidateBS(primaryBS, subsidiaryBS, ConsolidateOptions{ContorollingInterestRatio: 0.6})
 
 	// BSテスト
 
