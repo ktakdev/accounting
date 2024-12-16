@@ -21,11 +21,11 @@ type Liabilities struct {
 }
 
 type NetAssets struct {
-	Capital                 float64 `json:"資本金"`
-	CapitalSurplus          float64 `json:"資本剰余金"`
-	RetainedEarnings        float64 `json:"利益剰余金"`
-	NonControllingInterests float64 `json:"被支配株主持分"`
-	FairValueDiff           float64 `json:"評価差額"`
+	Capital          float64 `json:"資本金"`
+	CapitalSurplus   float64 `json:"資本剰余金"`
+	RetainedEarnings float64 `json:"利益剰余金"`
+	NCI              float64 `json:"被支配株主持分"`
+	FairValueDiff    float64 `json:"評価差額"`
 }
 
 type BS = BalanceSheet
@@ -78,11 +78,11 @@ func (netAssets *NetAssets) Sum() float64 {
 // 純資産の足し算
 func (netAssets *NetAssets) Add(netAssets2 NetAssets) NetAssets {
 	return NetAssets{
-		Capital:                 netAssets.Capital + netAssets2.Capital,
-		CapitalSurplus:          netAssets.CapitalSurplus + netAssets2.CapitalSurplus,
-		RetainedEarnings:        netAssets.RetainedEarnings + netAssets2.RetainedEarnings,
-		NonControllingInterests: netAssets.NonControllingInterests + netAssets2.NonControllingInterests,
-		FairValueDiff:           netAssets.FairValueDiff + netAssets2.FairValueDiff,
+		Capital:          netAssets.Capital + netAssets2.Capital,
+		CapitalSurplus:   netAssets.CapitalSurplus + netAssets2.CapitalSurplus,
+		RetainedEarnings: netAssets.RetainedEarnings + netAssets2.RetainedEarnings,
+		NCI:              netAssets.NCI + netAssets2.NCI,
+		FairValueDiff:    netAssets.FairValueDiff + netAssets2.FairValueDiff,
 	}
 }
 

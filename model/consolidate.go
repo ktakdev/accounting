@@ -42,10 +42,10 @@ func ConsolidateBS(primaryBS, subsidiaryBS BS, opts ConsolidateOptions) BS {
 				OtherLiabilities: primaryBS.Credit.Liabilities.OtherLiabilities + subCurrentValueBS.Credit.Liabilities.OtherLiabilities,
 			},
 			NetAssets: NetAssets{
-				Capital:                 primaryBS.Credit.NetAssets.Capital,
-				CapitalSurplus:          primaryBS.Credit.NetAssets.CapitalSurplus,
-				RetainedEarnings:        primaryBS.Credit.NetAssets.RetainedEarnings,
-				NonControllingInterests: nonControllingInterests,
+				Capital:          primaryBS.Credit.NetAssets.Capital,
+				CapitalSurplus:   primaryBS.Credit.NetAssets.CapitalSurplus,
+				RetainedEarnings: primaryBS.Credit.NetAssets.RetainedEarnings,
+				NCI:              nonControllingInterests,
 			},
 		},
 	}

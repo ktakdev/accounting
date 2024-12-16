@@ -99,8 +99,8 @@ func TestConsolidate(t *testing.T) {
 		t.Errorf("諸負債 = %v,  want %v", consolidatedPL.Credit.OtherIncome, 750000)
 	}
 
-	if consolidatedBS.Credit.NetAssets.NonControllingInterests != 0 {
-		t.Errorf("被支配株主持分 = %v,  want %v", consolidatedBS.Credit.NetAssets.NonControllingInterests, 0)
+	if consolidatedBS.Credit.NetAssets.NCI != 0 {
+		t.Errorf("被支配株主持分 = %v,  want %v", consolidatedBS.Credit.NetAssets.NCI, 0)
 	}
 }
 
@@ -172,8 +172,8 @@ func TestConsolidateGoodwill(t *testing.T) {
 		t.Errorf("利益剰余金 = %v,  want %v", consolidatedBS.Credit.NetAssets.RetainedEarnings, 23000)
 	}
 
-	if consolidatedBS.Credit.NetAssets.NonControllingInterests != 0 {
-		t.Errorf("被支配株主持分 = %v,  want %v", consolidatedBS.Credit.NetAssets.NonControllingInterests, 0)
+	if consolidatedBS.Credit.NetAssets.NCI != 0 {
+		t.Errorf("被支配株主持分 = %v,  want %v", consolidatedBS.Credit.NetAssets.NCI, 0)
 	}
 }
 
@@ -259,7 +259,7 @@ func TestConsolidateNCI(t *testing.T) {
 		t.Errorf("資本剰余金 = %v,  want %v", consolidatedBS.Credit.NetAssets.CapitalSurplus, 10000)
 	}
 
-	if consolidatedBS.Credit.NetAssets.NonControllingInterests != 7000 {
-		t.Errorf("被支配株主持分 = %v,  want %v", consolidatedBS.Credit.NetAssets.NonControllingInterests, 7000)
+	if consolidatedBS.Credit.NetAssets.NCI != 7000 {
+		t.Errorf("被支配株主持分 = %v,  want %v", consolidatedBS.Credit.NetAssets.NCI, 7000)
 	}
 }
