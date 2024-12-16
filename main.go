@@ -13,10 +13,14 @@ func main() {
 			SubsidiaryStock: 17000,
 		},
 		Credit: model.BSCredit{
-			OtherLiabilities: 86000,
-			Capital:          55000,
-			CapitalSurplus:   10000,
-			RetainedEarnings: 23000,
+			Liabilities: model.Liabilities{
+				OtherLiabilities: 86000,
+			},
+			NetAssets: model.NetAssets{
+				Capital:          55000,
+				CapitalSurplus:   10000,
+				RetainedEarnings: 23000,
+			},
 		},
 	}
 
@@ -25,10 +29,14 @@ func main() {
 			OtherAssets: 48000,
 		},
 		Credit: model.BSCredit{
-			OtherLiabilities: 19000,
-			Capital:          10000,
-			CapitalSurplus:   2000,
-			RetainedEarnings: 5000,
+			Liabilities: model.Liabilities{
+				OtherLiabilities: 19000,
+			},
+			NetAssets: model.NetAssets{
+				Capital:          10000,
+				CapitalSurplus:   2000,
+				RetainedEarnings: 5000,
+			},
 		},
 	}
 

@@ -10,7 +10,15 @@ type BSDebit struct {
 }
 
 type BSCredit struct {
+	Liabilities Liabilities `json:"負債"`
+	NetAssets   NetAssets   `json:"純資産"`
+}
+
+type Liabilities struct {
 	OtherLiabilities int `json:"諸負債"`
+}
+
+type NetAssets struct {
 	Capital          int `json:"資本金"`
 	CapitalSurplus   int `json:"資本剰余金"`
 	RetainedEarnings int `json:"利益剰余金"`
@@ -25,7 +33,17 @@ func (debit *BSDebit) Sum() int {
 
 // 貸方合計
 func (credit *BSCredit) Sum() int {
-	return credit.OtherLiabilities + credit.Capital + credit.CapitalSurplus + credit.RetainedEarnings
+	return credit.Liabilities.Sum() + credit.NetAssets.Sum()
+}
+
+// 負債合計
+func (liabilies *Liabilities) Sum() int {
+	return liabilies.OtherLiabilities
+}
+
+// 純資産合計
+func (netAssets *NetAssets) Sum() int {
+	return netAssets.Capital + netAssets.CapitalSurplus + netAssets.RetainedEarnings
 }
 
 // 貸借の一致を確認

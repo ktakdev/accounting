@@ -11,10 +11,14 @@ func TestConsolidate(t *testing.T) {
 			SubsidiaryStock: 17000,
 		},
 		Credit: BSCredit{
-			OtherLiabilities: 86000,
-			Capital:          55000,
-			CapitalSurplus:   10000,
-			RetainedEarnings: 23000,
+			Liabilities: Liabilities{
+				OtherLiabilities: 86000,
+			},
+			NetAssets: NetAssets{
+				Capital:          55000,
+				CapitalSurplus:   10000,
+				RetainedEarnings: 23000,
+			},
 		},
 	}
 
@@ -23,10 +27,14 @@ func TestConsolidate(t *testing.T) {
 			OtherAssets: 48000,
 		},
 		Credit: BSCredit{
-			OtherLiabilities: 19000,
-			Capital:          10000,
-			CapitalSurplus:   2000,
-			RetainedEarnings: 5000,
+			Liabilities: Liabilities{
+				OtherLiabilities: 19000,
+			},
+			NetAssets: NetAssets{
+				Capital:          10000,
+				CapitalSurplus:   2000,
+				RetainedEarnings: 5000,
+			},
 		},
 	}
 
@@ -61,20 +69,20 @@ func TestConsolidate(t *testing.T) {
 		t.Errorf("子会社株式 = %v,  want %v", consolidatedBS.Debit.SubsidiaryStock, 0)
 	}
 
-	if consolidatedBS.Credit.OtherLiabilities != 105000 {
-		t.Errorf("諸負債 = %v,  want %v", consolidatedBS.Credit.OtherLiabilities, 105000)
+	if consolidatedBS.Credit.Liabilities.OtherLiabilities != 105000 {
+		t.Errorf("諸負債 = %v,  want %v", consolidatedBS.Credit.Liabilities.OtherLiabilities, 105000)
 	}
 
-	if consolidatedBS.Credit.Capital != 55000 {
-		t.Errorf("資本金 = %v,  want %v", consolidatedBS.Credit.Capital, 55000)
+	if consolidatedBS.Credit.NetAssets.Capital != 55000 {
+		t.Errorf("資本金 = %v,  want %v", consolidatedBS.Credit.NetAssets.Capital, 55000)
 	}
 
-	if consolidatedBS.Credit.CapitalSurplus != 10000 {
-		t.Errorf("資本剰余金 = %v,  want %v", consolidatedBS.Credit.CapitalSurplus, 10000)
+	if consolidatedBS.Credit.NetAssets.CapitalSurplus != 10000 {
+		t.Errorf("資本剰余金 = %v,  want %v", consolidatedBS.Credit.NetAssets.CapitalSurplus, 10000)
 	}
 
-	if consolidatedBS.Credit.RetainedEarnings != 65000 {
-		t.Errorf("利益剰余金 = %v,  want %v", consolidatedBS.Credit.RetainedEarnings, 65000)
+	if consolidatedBS.Credit.NetAssets.RetainedEarnings != 65000 {
+		t.Errorf("利益剰余金 = %v,  want %v", consolidatedBS.Credit.NetAssets.RetainedEarnings, 65000)
 	}
 
 	// PLテスト
