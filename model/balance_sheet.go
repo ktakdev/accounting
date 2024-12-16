@@ -53,3 +53,18 @@ func (bs *BalanceSheet) Validate() bool {
 	creditTotal := bs.Credit.Sum()
 	return debitTotal == creditTotal
 }
+
+// PLを適用する
+func (bs *BalanceSheet) applyPL(pl PL) BalanceSheet {
+	return BalanceSheet{
+		Debit: bs.Debit,
+		Credit: BSCredit{
+			Liabilities: bs.Credit.Liabilities,
+			NetAssets: NetAssets{
+				Capital:          bs.Credit.NetAssets.Capital,
+				CapitalSurplus:   bs.Credit.NetAssets.CapitalSurplus,
+				RetainedEarnings: bs.Credit.NetAssets.RetainedEarnings + pl.Debit.NetIncome,
+			},
+		},
+	}
+}

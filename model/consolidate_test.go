@@ -99,3 +99,72 @@ func TestConsolidate(t *testing.T) {
 		t.Errorf("諸負債 = %v,  want %v", consolidatedPL.Credit.OtherIncome, 750000)
 	}
 }
+
+// 29-1-15
+func TestConsolidateGoodwill(t *testing.T) {
+
+	primaryBS := BS{
+		Debit: BSDebit{
+			OtherAssets:     154000,
+			SubsidiaryStock: 20000,
+		},
+		Credit: BSCredit{
+			Liabilities: Liabilities{
+				OtherLiabilities: 86000,
+			},
+			NetAssets: NetAssets{
+				Capital:          55000,
+				CapitalSurplus:   10000,
+				RetainedEarnings: 23000,
+			},
+		},
+	}
+
+	subsidiaryBS := BS{
+		Debit: BSDebit{
+			OtherAssets: 36000,
+		},
+		Credit: BSCredit{
+			Liabilities: Liabilities{
+				OtherLiabilities: 19000,
+			},
+			NetAssets: NetAssets{
+				Capital:          10000,
+				CapitalSurplus:   2000,
+				RetainedEarnings: 5000,
+			},
+		},
+	}
+
+	consolidatedBS := ConsolidateBS(primaryBS, subsidiaryBS)
+
+	// BSテスト
+
+	if consolidatedBS.Debit.OtherAssets != 190000 {
+		t.Errorf("諸資産 = %v,  want %v", consolidatedBS.Debit.OtherAssets, 190000)
+	}
+
+	if consolidatedBS.Debit.SubsidiaryStock != 0 {
+		t.Errorf("子会社株式 = %v,  want %v", consolidatedBS.Debit.SubsidiaryStock, 0)
+	}
+
+	if consolidatedBS.Debit.Goodwill != 3000 {
+		t.Errorf("のれん = %v,  want %v", consolidatedBS.Debit.Goodwill, 3000)
+	}
+
+	if consolidatedBS.Credit.Liabilities.OtherLiabilities != 105000 {
+		t.Errorf("諸負債 = %v,  want %v", consolidatedBS.Credit.Liabilities.OtherLiabilities, 105000)
+	}
+
+	if consolidatedBS.Credit.NetAssets.Capital != 55000 {
+		t.Errorf("資本金 = %v,  want %v", consolidatedBS.Credit.NetAssets.Capital, 55000)
+	}
+
+	if consolidatedBS.Credit.NetAssets.CapitalSurplus != 10000 {
+		t.Errorf("資本剰余金 = %v,  want %v", consolidatedBS.Credit.NetAssets.CapitalSurplus, 10000)
+	}
+
+	if consolidatedBS.Credit.NetAssets.RetainedEarnings != 23000 {
+		t.Errorf("利益剰余金 = %v,  want %v", consolidatedBS.Credit.NetAssets.RetainedEarnings, 23000)
+	}
+}
