@@ -8,14 +8,14 @@ type ConsolidateOptions struct {
 // BS, PLの連結
 func Consolidate(primaryBS, subsidiaryBS BS, primaryPL, subsidiaryPL PL, opts ConsolidateOptions) (BS, PL) {
 	consolidatedBS := ConsolidateBS(primaryBS, subsidiaryBS, opts)
-	consolidatedPL := ConsolidatePL(primaryPL, subsidiaryPL)
+	consolidatedPL := ConsolidatePL(primaryPL, subsidiaryPL, opts)
 
 	return consolidatedBS.applyPL(consolidatedPL), consolidatedPL
 }
 
 func ConsolidateBS(primaryBS, subsidiaryBS BS, opts ConsolidateOptions) BS {
-	// 親会社の保有割合の指定なし、かつ子会社株式を持っていた場合
-	if opts.ContorollingInterestRatio == 0 && primaryBS.Debit.SubsidiaryStock > 0 {
+	// 親会社の保有割合の指定なし
+	if opts.ContorollingInterestRatio == 0 {
 		// すべて保有していると考える
 		opts.ContorollingInterestRatio = 1
 	}
@@ -51,14 +51,25 @@ func ConsolidateBS(primaryBS, subsidiaryBS BS, opts ConsolidateOptions) BS {
 	}
 }
 
-func ConsolidatePL(primaryPL, subsidiaryPL PL) PL {
+func ConsolidatePL(primaryPL, subsidiaryPL PL, opts ConsolidateOptions) PL {
+	// 親会社の保有割合の指定なし
+	if opts.ContorollingInterestRatio == 0 {
+		// すべて保有していると考える
+		opts.ContorollingInterestRatio = 1
+	}
+
+	CINetIncome := subsidiaryPL.Debit.NetIncome * opts.ContorollingInterestRatio
+	NCINetIncome := subsidiaryPL.Debit.NetIncome - CINetIncome
+
 	return PL{
 		PLDebit{
 			OtherExpenses: primaryPL.Debit.OtherExpenses + subsidiaryPL.Debit.OtherExpenses,
-			NetIncome:     primaryPL.Debit.NetIncome + subsidiaryPL.Debit.NetIncome,
+			NetIncome:     primaryPL.Debit.NetIncome + CINetIncome,
+			NCINetIncome:  NCINetIncome,
 		},
 		PLCredit{
 			OtherIncome: primaryPL.Credit.OtherIncome + subsidiaryPL.Credit.OtherIncome,
+			NCIChange:   NCINetIncome,
 		},
 	}
 }

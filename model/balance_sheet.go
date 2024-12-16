@@ -32,7 +32,7 @@ type BS = BalanceSheet
 
 // 借方合計
 func (debit *BSDebit) Sum() float64 {
-	return debit.OtherAssets + debit.Land + debit.SubsidiaryStock
+	return debit.OtherAssets + debit.Land + debit.SubsidiaryStock + debit.Goodwill
 }
 
 // 借方の足し算
@@ -72,7 +72,7 @@ func (liabilies *Liabilities) Add(liabilies2 Liabilities) Liabilities {
 
 // 純資産合計
 func (netAssets *NetAssets) Sum() float64 {
-	return netAssets.Capital + netAssets.CapitalSurplus + netAssets.RetainedEarnings + netAssets.FairValueDiff
+	return netAssets.Capital + netAssets.CapitalSurplus + netAssets.RetainedEarnings + netAssets.NCI + netAssets.FairValueDiff
 }
 
 // 純資産の足し算
@@ -111,6 +111,7 @@ func (bs *BalanceSheet) applyPL(pl PL) BalanceSheet {
 				Capital:          bs.Credit.NetAssets.Capital,
 				CapitalSurplus:   bs.Credit.NetAssets.CapitalSurplus,
 				RetainedEarnings: bs.Credit.NetAssets.RetainedEarnings + pl.Debit.NetIncome,
+				NCI:              bs.Credit.NetAssets.NCI + pl.Credit.NCIChange,
 			},
 		},
 	}

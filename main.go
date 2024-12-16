@@ -9,8 +9,9 @@ import (
 func main() {
 	primaryBS := model.BS{
 		Debit: model.BSDebit{
-			OtherAssets:     187000,
-			SubsidiaryStock: 17000,
+			OtherAssets:     138000,
+			Land:            54000,
+			SubsidiaryStock: 12000,
 		},
 		Credit: model.BSCredit{
 			Liabilities: model.Liabilities{
@@ -26,7 +27,8 @@ func main() {
 
 	subsidiaryBS := model.BS{
 		Debit: model.BSDebit{
-			OtherAssets: 48000,
+			OtherAssets: 42000,
+			Land:        6000,
 		},
 		Credit: model.BSCredit{
 			Liabilities: model.Liabilities{
@@ -60,7 +62,23 @@ func main() {
 		},
 	}
 
-	consolidatedBS, consolidatedPL := model.Consolidate(primaryBS, subsidiaryBS, primaryPL, subsidiaryPL, model.ConsolidateOptions{})
+	// 連結条件
+	opts := model.ConsolidateOptions{
+		// 60%保有
+		ContorollingInterestRatio: 0.6,
+		// 子会社の土地が500円評価増
+		SubsidiaryBSDiff: &model.BS{
+			Debit: model.BSDebit{
+				Land: 500,
+			},
+			Credit: model.BSCredit{
+				NetAssets: model.NetAssets{
+					FairValueDiff: 500,
+				},
+			},
+		},
+	}
+	consolidatedBS, consolidatedPL := model.Consolidate(primaryBS, subsidiaryBS, primaryPL, subsidiaryPL, opts)
 
 	jsonDataBS, err := json.Marshal(consolidatedBS)
 	if err != nil {
@@ -82,9 +100,8 @@ func main() {
 		return
 	}
 
+	fmt.Println(string(jsonDataPL))
 	if !isValidPL {
 		fmt.Println("整合性のないPLです")
 	}
-
-	fmt.Println(string(jsonDataPL))
 }
