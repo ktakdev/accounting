@@ -41,8 +41,9 @@ func main() {
 	}
 
 	primaryPL := model.PL{
-		Debit: model.PLDebit{OtherExpenses: 570000,
-			NetIncome: 30000,
+		Debit: model.PLDebit{
+			OtherExpenses: 570000,
+			NetIncome:     30000,
 		},
 		Credit: model.PLCredit{
 			OtherIncome: 600000,
