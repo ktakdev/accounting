@@ -1,16 +1,16 @@
 package model
 
 type PLDebit struct {
-	OtherExpenses float64 `json:"諸費用"`
-	NetIncome     float64 `json:"当期純利益"`
+	OtherExpenses float64 `json:"諸費用,omitempty"`
+	NetIncome     float64 `json:"当期純利益,omitempty"`
 }
 type PLCredit struct {
-	OtherIncome float64 `json:"諸収益"`
+	OtherIncome float64 `json:"諸収益,omitempty"`
 }
 
 type ProfitLoss struct {
-	Debit  PLDebit  `json:"借方"`
-	Credit PLCredit `json:"貸方"`
+	Debit  PLDebit  `json:"借方,omitempty"`
+	Credit PLCredit `json:"貸方,omitempty"`
 }
 
 type PL = ProfitLoss

@@ -5,27 +5,27 @@ type BalanceSheet struct {
 	Credit BSCredit `json:"貸方"`
 }
 type BSDebit struct {
-	OtherAssets     float64 `json:"諸資産"`
-	Land            float64 `json:"土地"`
-	SubsidiaryStock float64 `json:"子会社株式"`
-	Goodwill        float64 `json:"のれん"`
+	OtherAssets     float64 `json:"諸資産,omitempty"`
+	Land            float64 `json:"土地,omitempty"`
+	SubsidiaryStock float64 `json:"子会社株式,omitempty"`
+	Goodwill        float64 `json:"のれん,omitempty"`
 }
 
 type BSCredit struct {
-	Liabilities Liabilities `json:"負債"`
-	NetAssets   NetAssets   `json:"純資産"`
+	Liabilities Liabilities `json:"負債,omitempty"`
+	NetAssets   NetAssets   `json:"純資産,omitempty"`
 }
 
 type Liabilities struct {
-	OtherLiabilities float64 `json:"諸負債"`
+	OtherLiabilities float64 `json:"諸負債,omitempty"`
 }
 
 type NetAssets struct {
-	Capital          float64 `json:"資本金"`
-	CapitalSurplus   float64 `json:"資本剰余金"`
-	RetainedEarnings float64 `json:"利益剰余金"`
-	NCI              float64 `json:"被支配株主持分"`
-	FairValueDiff    float64 `json:"評価差額"`
+	Capital          float64 `json:"資本金,omitempty"`
+	CapitalSurplus   float64 `json:"資本剰余金,omitempty"`
+	RetainedEarnings float64 `json:"利益剰余金,omitempty"`
+	NCI              float64 `json:"被支配株主持分,omitempty"`
+	FairValueDiff    float64 `json:"評価差額,omitempty"`
 }
 
 type BS = BalanceSheet
