@@ -201,21 +201,37 @@ func TestConsolidateNCI(t *testing.T) {
 	subsidiaryBS := BS{
 		Debit: BSDebit{
 			OtherAssets: 30000,
-			Land:        6500,
+			Land:        6000,
 		},
 		Credit: BSCredit{
 			Liabilities: Liabilities{
 				OtherLiabilities: 19000,
 			},
 			NetAssets: NetAssets{
-				Capital:          10500,
+				Capital:          10000,
 				CapitalSurplus:   2000,
 				RetainedEarnings: 5000,
 			},
 		},
 	}
 
-	consolidatedBS := ConsolidateBS(primaryBS, subsidiaryBS, ConsolidateOptions{ContorollingInterestRatio: 0.6})
+	// 連結条件
+	opts := ConsolidateOptions{
+		// 60%保有
+		ContorollingInterestRatio: 0.6,
+		// 子会社の土地が500円評価増
+		SubsidiaryBSDiff: &BS{
+			BSDebit{
+				Land: 500,
+			},
+			BSCredit{
+				NetAssets: NetAssets{
+					FairValueDiff: 500,
+				},
+			},
+		},
+	}
+	consolidatedBS := ConsolidateBS(primaryBS, subsidiaryBS, opts)
 
 	// BSテスト
 

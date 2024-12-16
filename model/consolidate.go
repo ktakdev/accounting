@@ -2,6 +2,7 @@ package model
 
 type ConsolidateOptions struct {
 	ContorollingInterestRatio float64 `json:"親会社が保有している株式の割合"`
+	SubsidiaryBSDiff          *BS     `json:"子会社のBS時価変動分"`
 }
 
 // BS, PLの連結
@@ -19,20 +20,26 @@ func ConsolidateBS(primaryBS, subsidiaryBS BS, opts ConsolidateOptions) BS {
 		opts.ContorollingInterestRatio = 1
 	}
 
-	netAssetsSum := subsidiaryBS.Credit.NetAssets.Sum()
+	// 子会社BSと時価評価に差があるならそれを適用
+	subCurrentValueBS := subsidiaryBS
+	if opts.SubsidiaryBSDiff != nil {
+		subCurrentValueBS = subsidiaryBS.Add(*opts.SubsidiaryBSDiff)
+	}
+
+	netAssetsSum := subCurrentValueBS.Credit.NetAssets.Sum()
 	controllingInterests := netAssetsSum * opts.ContorollingInterestRatio
 	nonControllingInterests := netAssetsSum - controllingInterests
 
 	return BS{
 		Debit: BSDebit{
-			OtherAssets:     primaryBS.Debit.OtherAssets + subsidiaryBS.Debit.OtherAssets,
-			Land:            primaryBS.Debit.Land + subsidiaryBS.Debit.Land,
+			OtherAssets:     primaryBS.Debit.OtherAssets + subCurrentValueBS.Debit.OtherAssets,
+			Land:            primaryBS.Debit.Land + subCurrentValueBS.Debit.Land,
 			SubsidiaryStock: 0,
 			Goodwill:        primaryBS.Debit.SubsidiaryStock - controllingInterests,
 		},
 		Credit: BSCredit{
 			Liabilities: Liabilities{
-				OtherLiabilities: primaryBS.Credit.Liabilities.OtherLiabilities + subsidiaryBS.Credit.Liabilities.OtherLiabilities,
+				OtherLiabilities: primaryBS.Credit.Liabilities.OtherLiabilities + subCurrentValueBS.Credit.Liabilities.OtherLiabilities,
 			},
 			NetAssets: NetAssets{
 				Capital:                 primaryBS.Credit.NetAssets.Capital,
