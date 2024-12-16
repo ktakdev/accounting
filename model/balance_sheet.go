@@ -72,7 +72,7 @@ func (liabilies *Liabilities) Add(liabilies2 Liabilities) Liabilities {
 
 // 純資産合計
 func (netAssets *NetAssets) Sum() float64 {
-	return netAssets.Capital + netAssets.CapitalSurplus + netAssets.RetainedEarnings
+	return netAssets.Capital + netAssets.CapitalSurplus + netAssets.RetainedEarnings + netAssets.FairValueDiff
 }
 
 // 純資産の足し算
