@@ -29,8 +29,23 @@ func (credit *PLCredit) Sum() float64 {
 }
 
 // 貸借の一致を確認
-func (pl *ProfitLoss) Validate() bool {
+func (pl *PL) Validate() bool {
 	debitTotal := pl.Debit.Sum()
 	creditTotal := pl.Credit.Sum()
 	return debitTotal == creditTotal
+}
+
+func (pl *PL) Add(pl2 PL) PL {
+	return PL{
+		Debit: PLDebit{
+			OtherExpenses:        pl.Debit.OtherExpenses + pl2.Debit.OtherExpenses,
+			NetIncome:            pl.Debit.NetIncome + pl2.Debit.NetIncome,
+			NCINetIncome:         pl.Debit.NCINetIncome + pl2.Debit.NCINetIncome,
+			GoodwillAmortization: pl.Debit.GoodwillAmortization + pl2.Debit.GoodwillAmortization,
+		},
+		Credit: PLCredit{
+			OtherIncome: pl.Credit.OtherIncome + pl2.Credit.OtherIncome,
+			NCIChange:   pl.Credit.NCIChange + pl2.Credit.NCIChange,
+		},
+	}
 }

@@ -104,14 +104,22 @@ func (bs *BalanceSheet) Validate() bool {
 // PLを適用する
 func (bs *BalanceSheet) applyPL(pl PL) BalanceSheet {
 	return BalanceSheet{
-		Debit: bs.Debit,
+		Debit: BSDebit{
+			OtherAssets:     bs.Debit.OtherAssets,
+			Land:            bs.Debit.Land,
+			SubsidiaryStock: bs.Debit.SubsidiaryStock,
+			// のれん償却を反映
+			Goodwill: bs.Debit.Goodwill - pl.Debit.GoodwillAmortization,
+		},
 		Credit: BSCredit{
 			Liabilities: bs.Credit.Liabilities,
 			NetAssets: NetAssets{
-				Capital:          bs.Credit.NetAssets.Capital,
-				CapitalSurplus:   bs.Credit.NetAssets.CapitalSurplus,
+				Capital:        bs.Credit.NetAssets.Capital,
+				CapitalSurplus: bs.Credit.NetAssets.CapitalSurplus,
+				// 当期純損益を利益剰余金に反映
 				RetainedEarnings: bs.Credit.NetAssets.RetainedEarnings + pl.Debit.NetIncome,
-				NCI:              bs.Credit.NetAssets.NCI + pl.Credit.NCIChange,
+				// 被支配株主に帰属する当期純損益を反映
+				NCI: bs.Credit.NetAssets.NCI + pl.Credit.NCIChange,
 			},
 		},
 	}

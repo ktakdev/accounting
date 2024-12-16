@@ -1,14 +1,35 @@
 package model
 
 type ConsolidateOptions struct {
-	CIRatio          float64 `json:"親会社が保有している株式の割合"`
-	SubsidiaryBSDiff *BS     `json:"子会社のBS時価変動分"`
+	CIRatio                   float64 `json:"親会社が保有している株式の割合"`
+	SubsidiaryBSDiff          *BS     `json:"子会社のBS時価変動分"`
+	GoodwillAmortizationYears float64 `json:"のれんの償却年数"`
 }
 
 // BS, PLの連結
 func Consolidate(primaryBS, subsidiaryBS BS, primaryPL, subsidiaryPL PL, opts ConsolidateOptions) (BS, PL) {
 	consolidatedBS := ConsolidateBS(primaryBS, subsidiaryBS, opts)
 	consolidatedPL := ConsolidatePL(primaryPL, subsidiaryPL, opts)
+
+	// のれんが存在するならのれん償却をPLに反映
+	if consolidatedBS.Debit.Goodwill > 0 {
+
+		// のれん償却年数が指定されていなければ20年を指定
+		amortizationYears := opts.GoodwillAmortizationYears
+		if opts.GoodwillAmortizationYears == 0 {
+			amortizationYears = 20
+		}
+
+		amortization := consolidatedBS.Debit.Goodwill / amortizationYears
+		amortizedPL := consolidatedPL.Add(PL{
+			Debit: PLDebit{
+				GoodwillAmortization: amortization,
+				NetIncome:            -amortization,
+			},
+		})
+
+		return consolidatedBS.applyPL(amortizedPL), amortizedPL
+	}
 
 	return consolidatedBS.applyPL(consolidatedPL), consolidatedPL
 }
