@@ -219,7 +219,7 @@ func TestConsolidateBSWithNCI(t *testing.T) {
 	// 連結条件
 	opts := ConsolidateOptions{
 		// 60%保有
-		ContorollingInterestRatio: 0.6,
+		CIRatio: 0.6,
 		// 子会社の土地が500円評価増
 		SubsidiaryBSDiff: &BS{
 			BSDebit{
@@ -326,7 +326,7 @@ func TestConsolidateWithNCI(t *testing.T) {
 	// 連結条件
 	opts := ConsolidateOptions{
 		// 60%保有
-		ContorollingInterestRatio: 0.6,
+		CIRatio: 0.6,
 		// 子会社の土地が500円評価増
 		SubsidiaryBSDiff: &BS{
 			BSDebit{

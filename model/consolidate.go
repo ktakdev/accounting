@@ -1,8 +1,8 @@
 package model
 
 type ConsolidateOptions struct {
-	ContorollingInterestRatio float64 `json:"親会社が保有している株式の割合"`
-	SubsidiaryBSDiff          *BS     `json:"子会社のBS時価変動分"`
+	CIRatio          float64 `json:"親会社が保有している株式の割合"`
+	SubsidiaryBSDiff *BS     `json:"子会社のBS時価変動分"`
 }
 
 // BS, PLの連結
@@ -15,9 +15,9 @@ func Consolidate(primaryBS, subsidiaryBS BS, primaryPL, subsidiaryPL PL, opts Co
 
 func ConsolidateBS(primaryBS, subsidiaryBS BS, opts ConsolidateOptions) BS {
 	// 親会社の保有割合の指定なし
-	if opts.ContorollingInterestRatio == 0 {
+	if opts.CIRatio == 0 {
 		// すべて保有していると考える
-		opts.ContorollingInterestRatio = 1
+		opts.CIRatio = 1
 	}
 
 	// 子会社BSと時価評価に差があるならそれを適用
@@ -27,15 +27,15 @@ func ConsolidateBS(primaryBS, subsidiaryBS BS, opts ConsolidateOptions) BS {
 	}
 
 	netAssetsSum := subCurrentValueBS.Credit.NetAssets.Sum()
-	controllingInterests := netAssetsSum * opts.ContorollingInterestRatio
-	nonControllingInterests := netAssetsSum - controllingInterests
+	CI := netAssetsSum * opts.CIRatio
+	NCI := netAssetsSum - CI
 
 	return BS{
 		Debit: BSDebit{
 			OtherAssets:     primaryBS.Debit.OtherAssets + subCurrentValueBS.Debit.OtherAssets,
 			Land:            primaryBS.Debit.Land + subCurrentValueBS.Debit.Land,
 			SubsidiaryStock: 0,
-			Goodwill:        primaryBS.Debit.SubsidiaryStock - controllingInterests,
+			Goodwill:        primaryBS.Debit.SubsidiaryStock - CI,
 		},
 		Credit: BSCredit{
 			Liabilities: Liabilities{
@@ -45,7 +45,7 @@ func ConsolidateBS(primaryBS, subsidiaryBS BS, opts ConsolidateOptions) BS {
 				Capital:          primaryBS.Credit.NetAssets.Capital,
 				CapitalSurplus:   primaryBS.Credit.NetAssets.CapitalSurplus,
 				RetainedEarnings: primaryBS.Credit.NetAssets.RetainedEarnings,
-				NCI:              nonControllingInterests,
+				NCI:              NCI,
 			},
 		},
 	}
@@ -53,13 +53,13 @@ func ConsolidateBS(primaryBS, subsidiaryBS BS, opts ConsolidateOptions) BS {
 
 func ConsolidatePL(primaryPL, subsidiaryPL PL, opts ConsolidateOptions) PL {
 	// 親会社の保有割合の指定なし
-	if opts.ContorollingInterestRatio == 0 {
+	if opts.CIRatio == 0 {
 		// すべて保有していると考える
-		opts.ContorollingInterestRatio = 1
+		opts.CIRatio = 1
 	}
 
 	// 親会社に帰属する子会社の当期純損益
-	CINetIncome := subsidiaryPL.Debit.NetIncome * opts.ContorollingInterestRatio
+	CINetIncome := subsidiaryPL.Debit.NetIncome * opts.CIRatio
 
 	// 被支配株主に帰属する子会社の当期純損益
 	NCINetIncome := subsidiaryPL.Debit.NetIncome - CINetIncome

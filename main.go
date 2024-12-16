@@ -65,7 +65,7 @@ func main() {
 	// 連結条件
 	opts := model.ConsolidateOptions{
 		// 60%保有
-		ContorollingInterestRatio: 0.6,
+		CIRatio: 0.6,
 		// 子会社の土地が500円評価増
 		SubsidiaryBSDiff: &model.BS{
 			Debit: model.BSDebit{
