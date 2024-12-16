@@ -7,6 +7,7 @@ type BalanceSheet struct {
 type BSDebit struct {
 	OtherAssets     int `json:"諸資産"`
 	SubsidiaryStock int `json:"子会社株式"`
+	Goodwill        int `json:"のれん"`
 }
 
 type BSCredit struct {
